@@ -1,4 +1,4 @@
-import { asyncRoutes, constantRoutes } from '@app/router';
+import { asyncRoutes, constantRoutes } from '@/app/router';
 import {defineStore} from "pinia";
 
 /**

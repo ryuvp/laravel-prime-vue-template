@@ -1,8 +1,8 @@
-import {login, logout, getInfo} from '@app/api/auth'
-import {isLogged, setToken, removeToken} from '@app/utils/auth'
-import router, {resetRouter} from '@app/router'
+import {login, logout, getInfo} from '@/app/api/auth'
+import {isLogged, setToken, removeToken} from '@/app/utils/auth'
+import router, {resetRouter} from '@/app/router'
 import {defineStore} from "pinia"
-import {permissionStore} from "@/store/permission";
+import {permissionStore} from "./permission";
 
 export const userStore = defineStore('user', {
   state: () => {
@@ -25,7 +25,7 @@ export const userStore = defineStore('user', {
       return new Promise((resolve, reject) => {
         login({email: email.trim(), password: password})
           .then(response => {
-            setToken(response.data.token)
+            setToken(response.token)
             resolve()
           })
           .catch(error => {
@@ -45,20 +45,17 @@ export const userStore = defineStore('user', {
               reject('Verification failed, please Login again.')
             }
 
-            const {roles, name, avatar, introduction, permissions, id, ipress} = data
-            // roles must be a non-empty array
+            const {roles, name, permissions, id} = data
+
             if (!roles || roles.length <= 0) {
               reject('getInfo: roles must be a non-null array!')
             }
 
             this.$patch((state) => {
               state.id = id
-              state.introduction = introduction
               state.name = name
               state.roles = roles
               state.permissions = permissions
-              state.avatar = avatar
-              state.ipress = ipress
             })
             resolve(data)
           })

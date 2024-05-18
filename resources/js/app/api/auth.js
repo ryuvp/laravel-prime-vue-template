@@ -1,4 +1,5 @@
-import request from '@app/utils/request';
+//api/auth.js
+import request from '@/app/utils/request';
 
 export function login(data) {
   return request({

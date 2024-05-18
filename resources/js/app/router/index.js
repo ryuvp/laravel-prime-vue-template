@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Layout from '../views/layout/Layout.vue'
+import { isLogged } from '@/app/utils/auth'
 
 export const constantRoutes = [
     {
@@ -21,9 +22,37 @@ export const constantRoutes = [
     }
 ]
 
+export const asyncRoutes = [
+    //chartsRoutes,
+    //adminRoutes,
+    //errorRoutes,
+    { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: '/404', hidden: true }
+  ]
+
 const router = createRouter({
     routes: constantRoutes,
     history: createWebHistory()
 })
+
+router.beforeEach((to, from, next) => {
+    if (isLogged()) {
+        next()
+    } else {
+        if (to.path !== '/intranet/login') {
+            next('/intranet/login')
+        } else {
+            next()
+        }
+    }
+})
+
+export function resetRouter() {
+    const asyncRouterNameArr = asyncRoutes.map((mItem) => mItem.name)
+    asyncRouterNameArr.forEach((name) => {
+      if (router.hasRoute(name)) {
+        router.removeRoute(name)
+      }
+    })
+  }
 
 export default router

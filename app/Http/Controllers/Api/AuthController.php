@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
-use App\Models\User;
 
-class AuthController extends Controller
+class AuthController extends BaseController
 {
     /**
      * Handle an authentication attempt.
@@ -91,5 +91,12 @@ class AuthController extends Controller
         return $status === Password::PASSWORD_RESET
                     ? response()->json(['message' => __($status)], 200)
                     : response()->json(['message' => __($status)], 400);
+    }
+
+    public function user(Request $request): UserResource
+    {
+        $user = $request->user();
+        $user->load('roles', 'permissions');
+        return new UserResource($user);
     }
 }

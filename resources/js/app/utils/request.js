@@ -1,36 +1,28 @@
-import '@/bootstrap';
-import { isLogged, getToken } from '@app/utils/auth';
+//util/request.js
+import axios from 'axios';
+import { isLogged, getToken } from '@/app/utils/auth';
 
-// Create axios instance
-const service = window.axios.create({
+const service = axios.create({
   baseURL: '/api',
-  timeout: 10000, // Request timeout
+  timeout: 10000,
 });
 
-// Request intercepter
 service.interceptors.request.use(
   config => {
     const token = isLogged();
     if (token) {
-      config.headers['Authorization'] = 'Bearer ' + getToken(); // Set JWT token
+      config.headers['Authorization'] = 'Bearer ' + getToken();
     }
     return config;
   },
   error => {
-    // Do something with request error
-    console.log(error); // for debug
+    console.log(error);
     Promise.reject(error);
   }
 );
 
-// response pre-processing
 service.interceptors.response.use(
   response => {
-    // if (response.headers.authorization) {
-    //   setLogged(response.headers.authorization);
-    //   response.data.token = response.headers.authorization;
-    // }
-
     return response.data;
   },
   error => {
