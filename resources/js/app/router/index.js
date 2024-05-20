@@ -4,6 +4,11 @@ import { isLogged } from '@/app/utils/auth'
 
 export const constantRoutes = [
     {
+        path: '/intranet/login',
+        component: () => import('../views/login/index.vue'),
+        hidden: true
+    },
+    {
         path: '/intranet',
         component: Layout,
         redirect: '/intranet/dashboard',
@@ -12,14 +17,58 @@ export const constantRoutes = [
                 path: 'dashboard',
                 component: () => import('../views/dashboard/index.vue'),
                 name: 'dashboard',
-                meta: { title: 'Dashboard', icon: 'dashboard', noCache: true }
+                meta: { title: 'Dashboard'}
             }
         ]
-    }, {
-        path: '/intranet/login',
-        component: () => import('../views/login/index.vue'),
-        hidden: true
-    }
+    },
+    {
+        path: '/intranet/users',
+        component: Layout,
+        children: [
+            {
+                path: '/intranet/users',
+                component: () => import('../views/manage/users/index.vue'),
+                name: 'users',
+                meta: { title: 'users'}
+            }
+        ]
+    },
+    {
+        path: '/intranet/roles',
+        component: Layout,
+        children: [
+            {
+                path: '/intranet/roles',
+                component: () => import('../views/manage/roles/index.vue'),
+                name: 'roles',
+                meta: { title: 'roles'}
+            }
+        ]
+    },
+    {
+        path: '/intranet/permissions',
+        component: Layout,
+        children: [
+            {
+                path: '/intranet/permissions',
+                component: () => import('../views/manage/permissions/index.vue'),
+                name: 'permissions',
+                meta: { title: 'permissions'}
+            }
+        ]
+    },
+    {
+        path: '/intranet/profile',
+        component: Layout,
+        children: [
+            {
+                path: '/intranet/profile',
+                component: () => import('../views/profile/profile/index.vue'),
+                name: 'profile',
+                meta: { title: 'profile'}
+            }
+        ]
+    },
 ]
 
 export const asyncRoutes = [

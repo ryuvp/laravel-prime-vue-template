@@ -16,6 +16,7 @@ export const userStore = defineStore('user', {
       ipress: '',
       roles: [],
       permissions: [],
+      routes: [],
     }
   },
   actions: {
@@ -51,11 +52,14 @@ export const userStore = defineStore('user', {
               reject('getInfo: roles must be a non-null array!')
             }
 
+            const hierarchicalPermissions = this.transformPermissions(permissions);
+
             this.$patch((state) => {
               state.id = id
               state.name = name
               state.roles = roles
-              state.permissions = permissions
+              state.permissions = hierarchicalPermissions
+              state.routes = permissions
             })
             resolve(data)
           })
@@ -118,5 +122,37 @@ export const userStore = defineStore('user', {
         resolve()
       })
     },
-  }
+
+    transformPermissions(permissions) {
+      const permissionMap = {};
+      permissions.forEach(permission => {
+        const levels = permission.name.split('.');
+        let currentLevel = permissionMap;
+        levels.forEach((level, index) => {
+          if (!currentLevel[level]) {
+            currentLevel[level] = {
+              ...permission,
+              children: {}
+            };
+          }
+          if (index === levels.length - 1) {
+            currentLevel[level] = { ...permission, children: {} };
+          }
+          currentLevel = currentLevel[level].children;
+        });
+      });
+
+      function buildHierarchy(map) {
+        return Object.keys(map).map(key => {
+          if (Object.keys(map[key].children).length === 0) {
+            delete map[key].children;
+          } else {
+            map[key].children = buildHierarchy(map[key].children);
+          }
+          return map[key];
+        });
+      }
+      return buildHierarchy(permissionMap);
+    },
+  },
 })

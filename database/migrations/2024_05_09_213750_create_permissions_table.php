@@ -13,7 +13,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Crear tablas
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
@@ -24,6 +23,9 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('description')->nullable();
+            $table->string('route')->nullable();
+            $table->string('icon')->nullable();
             $table->string('guard_name')->default('api');
             $table->timestamps();
         });
@@ -54,38 +56,35 @@ return new class extends Migration
                 ->onDelete('cascade');
         });
 
-        // Insertar roles
         $roles = [
             ['name' => 'superadmin', 'guard_name' => 'api'],
             ['name' => 'user', 'guard_name' => 'api'],
-            // Puedes agregar más roles aquí según sea necesario
         ];
         foreach ($roles as $roleData) {
             Role::create($roleData);
         }
 
-        // Insertar permisos
         $permissions = [
-            ['name' => 'manage_users', 'guard_name' => 'api'],
-            ['name' => 'manage_roles', 'guard_name' => 'api'],
-            ['name' => 'manage_permissions', 'guard_name' => 'api'],
-            ['name' => 'access_admin_panel', 'guard_name' => 'api'],
-            ['name' => 'view_profile', 'guard_name' => 'api'],
-            ['name' => 'edit_profile', 'guard_name' => 'api'],
-            // Puedes agregar más permisos aquí según sea necesario
+            ['name' => 'home', 'guard_name' => 'api', 'description' => 'home', 'route' => '', 'icon' => ''],
+            ['name' => 'home.dashboard', 'guard_name' => 'api', 'description' => 'dashboard', 'route' => '/intranet/dashboard', 'icon' => 'pi pi-home'],
+            ['name' => 'manage', 'guard_name' => 'api', 'description' => 'manage', 'route' => '', 'icon' => ''],
+            ['name' => 'manage.users', 'guard_name' => 'api', 'description' => 'users', 'route' => '/intranet/users', 'icon' => 'pi pi-users'],
+            ['name' => 'manage.roles', 'guard_name' => 'api', 'description' => 'roles', 'route' => '/intranet/roles', 'icon' => 'pi pi-lock'],
+            ['name' => 'manage.permissions', 'guard_name' => 'api', 'description' => 'permissions', 'route' => '/intranet/permissions', 'icon' => 'pi pi-ban'],
+            ['name' => 'profile', 'guard_name' => 'api', 'description' => 'profile', 'route' => '', 'icon' => ''],
+            ['name' => 'profile.user', 'guard_name' => 'api', 'description' => 'user', 'route' => '/intranet/profile', 'icon' => 'pi pi-user'],
         ];
         foreach ($permissions as $permissionData) {
             Permission::create($permissionData);
         }
 
-        // Asignar permisos a roles
         $superadminRole = Role::where('name', 'superadmin')->first();
         $userRole = Role::where('name', 'user')->first();
 
         $permissions = Permission::all();
 
         $superadminRole->givePermissionTo($permissions);
-        $userRole->givePermissionTo(['view_profile', 'edit_profile']);
+        $userRole->givePermissionTo(['profile', 'profile.user']);
     }
 
     /**

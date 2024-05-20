@@ -32,7 +32,12 @@ class UserResource extends JsonResource
             ),
             'permissions' => array_map(
                 function ($permission) {
-                    return $permission['name'];
+                    return [
+                        'name' => $permission['name'],
+                        'description' => $permission['description'],
+                        'route' => $permission['route'],
+                        'icon' => $permission['icon'],
+                    ];
                 },
                 $this->getAllPermissions()->toArray()
             ),
