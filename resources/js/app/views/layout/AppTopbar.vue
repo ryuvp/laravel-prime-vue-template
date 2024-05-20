@@ -84,14 +84,7 @@ const isOutsideClicked = (event) => {
         </button>
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-           <!--  <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-calendar"></i>
-                <span>Calendar</span>
-            </button> -->
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-user"></i>
-                <span>{{ user.name }}</span>
-            </button>
+            <Chip :label="user.name" :image="'/demo/images/avatar/ivanmagalhaes.png'" class="mr-2"></Chip>
             <button @click="onLogoutClick()" class="p-link layout-topbar-button">
                 <i class="pi pi-power-off"></i>
                 <span>Logout</span>
