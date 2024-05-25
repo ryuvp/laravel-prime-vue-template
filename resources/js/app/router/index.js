@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Layout from '../views/layout/Layout.vue'
-import { isLogged } from '@/app/utils/auth'
+import { createRouter, createWebHistory } from 'vue-router';
+import Layout from '../views/layout/Layout.vue';
+import { isLogged } from '@/app/utils/auth';
 
-export const constantRoutes = [
+const constantRoutes = [
     {
         path: '/intranet/login',
         component: () => import('../views/login/index.vue'),
@@ -17,91 +17,61 @@ export const constantRoutes = [
                 path: 'dashboard',
                 component: () => import('../views/dashboard/index.vue'),
                 name: 'dashboard',
-                meta: { title: 'Dashboard'}
-            }
-        ]
-    },
-    {
-        path: '/intranet/users',
-        component: Layout,
-        children: [
+                meta: { title: 'Dashboard' }
+            },
             {
-                path: '/intranet/users',
+                path: 'users',
                 component: () => import('../views/manage/users/index.vue'),
                 name: 'users',
-                meta: { title: 'users'}
-            }
-        ]
-    },
-    {
-        path: '/intranet/roles',
-        component: Layout,
-        children: [
+                meta: { title: 'Users' }
+            },
             {
-                path: '/intranet/roles',
+                path: 'roles',
                 component: () => import('../views/manage/roles/index.vue'),
                 name: 'roles',
-                meta: { title: 'roles'}
-            }
-        ]
-    },
-    {
-        path: '/intranet/permissions',
-        component: Layout,
-        children: [
+                meta: { title: 'Roles' }
+            },
             {
-                path: '/intranet/permissions',
+                path: 'permissions',
                 component: () => import('../views/manage/permissions/index.vue'),
                 name: 'permissions',
-                meta: { title: 'permissions'}
-            }
-        ]
-    },
-    {
-        path: '/intranet/profile',
-        component: Layout,
-        children: [
+                meta: { title: 'Permissions' }
+            },
             {
-                path: '/intranet/profile',
+                path: 'profile',
                 component: () => import('../views/profile/profile/index.vue'),
                 name: 'profile',
-                meta: { title: 'profile'}
+                meta: { title: 'Profile' }
             }
         ]
     },
-]
-
-export const asyncRoutes = [
-    //chartsRoutes,
-    //adminRoutes,
-    //errorRoutes,
     { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: '/404', hidden: true }
-  ]
+];
+
+const asyncRoutes = [
+    // Define aquí las rutas que son cargadas de forma asíncrona
+];
 
 const router = createRouter({
-    routes: constantRoutes,
-    history: createWebHistory()
-})
+    history: createWebHistory(),
+    routes: constantRoutes
+});
 
 router.beforeEach((to, from, next) => {
-    if (isLogged()) {
-        next()
+    if (isLogged() || to.path === '/intranet/login') {
+        next();
     } else {
-        if (to.path !== '/intranet/login') {
-            next('/intranet/login')
-        } else {
-            next()
-        }
+        next('/intranet/login');
     }
-})
+});
 
 export function resetRouter() {
-    const asyncRouterNameArr = asyncRoutes.map((mItem) => mItem.name)
-    asyncRouterNameArr.forEach((name) => {
-      if (router.hasRoute(name)) {
-        router.removeRoute(name)
-      }
-    })
-  }
+    router.getRoutes().forEach(route => {
+        if (!route.meta.constant) {
+            router.removeRoute(route.name);
+        }
+    });
+}
 
-export default router
+export { constantRoutes, asyncRoutes };
+export default router;

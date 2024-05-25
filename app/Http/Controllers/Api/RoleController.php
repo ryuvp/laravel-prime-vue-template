@@ -32,7 +32,14 @@ class RoleController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:roles',
+            'guard_name' => 'required|string'
+        ]);
+
+        $role = Role::create($request->all());
+
+        return new RoleResource($role);
     }
 
     /**
@@ -54,9 +61,18 @@ class RoleController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $role = Role::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|unique:roles,name,' . $id,
+            'guard_name' => 'required|string'
+        ]);
+
+        $role->update($request->all());
+
+        return new RoleResource($role);
     }
 
     /**
@@ -64,7 +80,10 @@ class RoleController extends BaseController
      */
     public function destroy(string $id)
     {
-        //
+        $role = Role::findOrFail($id);
+        $role->delete();
+
+        return response()->json(null, 204);
     }
 
     /**
@@ -76,5 +95,18 @@ class RoleController extends BaseController
     public function permissions(Role $role)
     {
         return PermissionResource::collection($role->permissions);
+    }
+
+    public function assignPermissions(Request $request, $roleId)
+    {
+        $role = Role::findOrFail($roleId);
+
+        $permissionsToRevoke = $request->input('revoke_permissions', []);
+        $permissionsToAdd = $request->input('permissions', []);
+
+        $role->revokePermissionTo($permissionsToRevoke);
+        $role->givePermissionTo($permissionsToAdd);
+
+        return new RoleResource($role);
     }
 }

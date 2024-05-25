@@ -16,6 +16,10 @@ class PermissionResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'description' => $this->description,
+            'route' => $this->route,
+            'icon' => $this->icon,
+            'category' => $this->category,
         ];
     }
 }

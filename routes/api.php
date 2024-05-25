@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\PermissionController;
+use App\Http\Controllers\Api\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,4 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
     //Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+    Route::apiResource('/permissions', PermissionController::class);
+    Route::apiResource('/roles', RoleController::class);
+    Route::post('roles/{role}/permissions', [RoleController::class, 'assignPermissions']);
 });

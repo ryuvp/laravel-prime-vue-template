@@ -23,9 +23,10 @@ return new class extends Migration
         Schema::create('permissions', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('description')->nullable();
+            $table->string('description');
             $table->string('route')->nullable();
             $table->string('icon')->nullable();
+            $table->string('category');
             $table->string('guard_name')->default('api');
             $table->timestamps();
         });
@@ -65,14 +66,14 @@ return new class extends Migration
         }
 
         $permissions = [
-            ['name' => 'home', 'guard_name' => 'api', 'description' => 'home', 'route' => '', 'icon' => ''],
-            ['name' => 'home.dashboard', 'guard_name' => 'api', 'description' => 'dashboard', 'route' => '/intranet/dashboard', 'icon' => 'pi pi-home'],
-            ['name' => 'manage', 'guard_name' => 'api', 'description' => 'manage', 'route' => '', 'icon' => ''],
-            ['name' => 'manage.users', 'guard_name' => 'api', 'description' => 'users', 'route' => '/intranet/users', 'icon' => 'pi pi-users'],
-            ['name' => 'manage.roles', 'guard_name' => 'api', 'description' => 'roles', 'route' => '/intranet/roles', 'icon' => 'pi pi-lock'],
-            ['name' => 'manage.permissions', 'guard_name' => 'api', 'description' => 'permissions', 'route' => '/intranet/permissions', 'icon' => 'pi pi-ban'],
-            ['name' => 'profile', 'guard_name' => 'api', 'description' => 'profile', 'route' => '', 'icon' => ''],
-            ['name' => 'profile.user', 'guard_name' => 'api', 'description' => 'user', 'route' => '/intranet/profile', 'icon' => 'pi pi-user'],
+            ['name' => 'home', 'guard_name' => 'api', 'description' => 'home', 'route' => '', 'icon' => '', 'category' => 'section'],
+            ['name' => 'home.dashboard', 'guard_name' => 'api', 'description' => 'dashboard', 'route' => '/intranet/dashboard', 'icon' => 'pi pi-home', 'category' => 'menu'],
+            ['name' => 'manage', 'guard_name' => 'api', 'description' => 'manage', 'route' => '', 'icon' => '', 'category' => 'section'],
+            ['name' => 'manage.users', 'guard_name' => 'api', 'description' => 'users', 'route' => '/intranet/users', 'icon' => 'pi pi-users', 'category' => 'menu'],
+            ['name' => 'manage.roles', 'guard_name' => 'api', 'description' => 'roles', 'route' => '/intranet/roles', 'icon' => 'pi pi-lock', 'category' => 'menu'],
+            ['name' => 'manage.permissions', 'guard_name' => 'api', 'description' => 'permissions', 'route' => '/intranet/permissions', 'icon' => 'pi pi-ban', 'category' => 'menu'],
+            ['name' => 'profile', 'guard_name' => 'api', 'description' => 'profile', 'route' => '', 'icon' => '', 'category' => 'section'],
+            ['name' => 'profile.user', 'guard_name' => 'api', 'description' => 'user', 'route' => '/intranet/profile', 'icon' => 'pi pi-user', 'category' => 'menu'],
         ];
         foreach ($permissions as $permissionData) {
             Permission::create($permissionData);

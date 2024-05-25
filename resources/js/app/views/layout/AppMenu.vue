@@ -16,6 +16,9 @@ function buildMenuStructure(permissions) {
 }
 
 function buildSubmenuEstructure(items) {
+    if (!Array.isArray(items)) {
+        return [];
+    }
     const submenu = [];
     items.forEach((item) => {
         if (item.children) {

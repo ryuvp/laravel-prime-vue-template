@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\PermissionResource;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
 class PermissionController extends BaseController
@@ -30,7 +30,19 @@ class PermissionController extends BaseController
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:permissions',
+            'description' => 'nullable|string',
+            'route' => 'nullable|string',
+            'icon' => 'nullable|string'
+        ]);
+
+        $permission = Permission::create($request->all());
+
+        $superadminRole = Role::where('name', 'superadmin')->first();
+        $superadminRole->givePermissionTo($permission);
+
+        return new PermissionResource($permission);
     }
 
     /**
@@ -52,9 +64,20 @@ class PermissionController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $permission = Permission::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|unique:permissions,name,' . $id,
+            'description' => 'nullable|string',
+            'route' => 'nullable|string',
+            'icon' => 'nullable|string'
+        ]);
+
+        $permission->update($request->all());
+
+        return new PermissionResource($permission);
     }
 
     /**
@@ -62,6 +85,9 @@ class PermissionController extends BaseController
      */
     public function destroy(string $id)
     {
-        //
+        $permission = Permission::findOrFail($id);
+        $permission->delete();
+
+        return response()->json(null, 204);
     }
 }
