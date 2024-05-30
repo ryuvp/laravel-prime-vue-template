@@ -17,9 +17,9 @@ const filters = ref({});
 const submitted = ref(false);
 const selectedCategory = ref(null);
 const categories = ref([
-    { label: 'Section', value: 'section' },
-    { label: 'Menu', value: 'menu' },
-    { label: 'Submenu', value: 'submenu' }
+    { label: 'Section', value: '0' },
+    { label: 'Menu', value: '1' },
+    { label: 'Menu-Link', value: '2' }
 ]);
 const sections = ref([
     { label: 'home', value: 'home' },
@@ -184,15 +184,9 @@ const onChange = (category) =>{
                     <Column field="category" header="Category" headerStyle="width:14%; min-width:10rem;">
                         <template #body="slotProps">
                             <span class="p-column-title">Category</span>
-                            <span v-if="slotProps.data.name.includes('.')">
-                                <Tag severity="success">Menu</Tag>
-                            </span>
-                            <span v-else-if="slotProps.data.name.split('.').length > 1">
-                                <Tag severity="warning">Submenu</Tag>
-                            </span>
-                            <span v-else>
-                                <Tag severity="info">Section</Tag>
-                            </span>
+                                <Tag :severity="slotProps.data.category === 2 ? 'success' : (slotProps.data.category === 1 ? 'warning' : 'info')">
+                                    {{ slotProps.data.category_name }}
+                                </Tag>
                         </template>
                     </Column>
                     <Column headerStyle="min-width:10rem;">

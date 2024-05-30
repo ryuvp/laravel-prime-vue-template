@@ -20,6 +20,9 @@ class PermissionResource extends JsonResource
             'route' => $this->route,
             'icon' => $this->icon,
             'category' => $this->category,
+            'category_name' => $this->category_name,
+            'guard_name' => $this->guard_name,
+            'children' => PermissionResource::collection($this->whenLoaded('children')),
         ];
     }
 }
