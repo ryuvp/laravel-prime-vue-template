@@ -15,7 +15,7 @@ const constantRoutes = [
         children: [
             {
                 path: 'dashboard',
-                component: () => import('../views/dashboard/index.vue'),
+                component: () => import('../views/home/dashboard/index.vue'),
                 name: 'dashboard',
                 meta: { title: 'Dashboard' }
             },
@@ -39,7 +39,7 @@ const constantRoutes = [
             },
             {
                 path: 'profile',
-                component: () => import('../views/profile/profile/index.vue'),
+                component: () => import('../views/profile/user/edit/index.vue'),
                 name: 'profile',
                 meta: { title: 'Profile' }
             }
